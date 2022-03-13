@@ -42,6 +42,7 @@ export class ExtensionsDownloader extends Disposable {
 		await this.cleanUpPromise;
 		const vsixName = this.getName(extension);
 		const location = joinPath(this.extensionsDownloadDir, vsixName);
+		const twoMinutes = 2 * 60 * 1000
 
 		// Download only if vsix does not exist
 		if (!await this.fileService.exists(location)) {
@@ -53,7 +54,7 @@ export class ExtensionsDownloader extends Disposable {
 
 			try {
 				// Rename temp location to original
-				await this.rename(tempLocation, location, Date.now() + (2 * 60 * 1000) /* Retry for 2 minutes */);
+				await this.rename(tempLocation, location, Date.now() + twoMinutes /* Retry for 2 minutes */);
 			} catch (error) {
 				try {
 					await this.fileService.del(tempLocation);
