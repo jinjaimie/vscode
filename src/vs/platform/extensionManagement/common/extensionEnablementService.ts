@@ -133,19 +133,20 @@ export class StorageManager extends Disposable {
 		}
 	}
 
+	// Adjusted nested if statements by extracting variables
 	private onDidStorageChange(storageChangeEvent: IStorageValueChangeEvent): void {
-		if (storageChangeEvent.scope === StorageScope.GLOBAL) {
-			if (!isUndefinedOrNull(this.storage[storageChangeEvent.key])) {
-				const newValue = this._get(storageChangeEvent.key, storageChangeEvent.scope);
-				if (newValue !== this.storage[storageChangeEvent.key]) {
-					const oldValues = this.get(storageChangeEvent.key, storageChangeEvent.scope);
-					delete this.storage[storageChangeEvent.key];
-					const newValues = this.get(storageChangeEvent.key, storageChangeEvent.scope);
-					const added = oldValues.filter(oldValue => !newValues.some(newValue => areSameExtensions(oldValue, newValue)));
-					const removed = newValues.filter(newValue => !oldValues.some(oldValue => areSameExtensions(oldValue, newValue)));
-					if (added.length || removed.length) {
-						this._onDidChange.fire([...added, ...removed]);
-					}
+		const scopeIsGlobal = (storageChangeEvent.scope === StorageScope.GLOBAL)
+		const eventIsDefined = (!isUndefinedOrNull(this.storage[storageChangeEvent.key]))
+		if (scopeIsGlobal && eventIsDefined) {
+			const newValue = this._get(storageChangeEvent.key, storageChangeEvent.scope);
+			if (newValue !== this.storage[storageChangeEvent.key]) {
+				const oldValues = this.get(storageChangeEvent.key, storageChangeEvent.scope);
+				delete this.storage[storageChangeEvent.key];
+				const newValues = this.get(storageChangeEvent.key, storageChangeEvent.scope);
+				const added = oldValues.filter(oldValue => !newValues.some(newValue => areSameExtensions(oldValue, newValue)));
+				const removed = newValues.filter(newValue => !oldValues.some(oldValue => areSameExtensions(oldValue, newValue)));
+				if (added.length || removed.length) {
+					this._onDidChange.fire([...added, ...removed]);
 				}
 			}
 		}
