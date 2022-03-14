@@ -125,7 +125,10 @@ export class ExtensionsDownloader extends Disposable {
 	}
 
 	private getName(extension: IGalleryExtension): string {
-		return this.cache ? `${new ExtensionIdentifierWithVersion(extension.identifier, extension.version).key().toLowerCase()}${extension.properties.targetPlatform !== TargetPlatform.UNDEFINED ? `-${extension.properties.targetPlatform}` : ''}` : generateUuid();
+		let extensionIdentifierString = `${new ExtensionIdentifierWithVersion(extension.identifier, extension.version).key().toLowerCase()}`
+		let extensionTargetString = extension.properties.targetPlatform !== TargetPlatform.UNDEFINED ? `-${extension.properties.targetPlatform}` : ''}
+		return this.cache ? `${extensionIdentifierString}${extensionTargetString}` : generateUuid()
+
 	}
 
 	private parse(name: string): ExtensionIdentifierWithVersion | null {
